@@ -1,0 +1,14 @@
+<ion-card>
+  <img [src]="item.foto" [alt]="item.nombre" />
+  <ion-card-header>
+    <ion-card-title>{{ item.nombre }}</ion-card-title>
+    <ion-card-subtitle>{{ item.depto }} - {{ item.dueno }} </ion-card-subtitle>
+  </ion-card-header>
+  
+  <ion-card-content>
+    <p>Garantía: {{ item.precio }}</p>
+    <ion-button>
+      Ver más
+    </ion-button>
+  </ion-card-content>
+</ion-card>

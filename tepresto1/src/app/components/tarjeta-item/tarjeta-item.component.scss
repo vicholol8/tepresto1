@@ -1,0 +1,28 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+ion-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+}
+
+img {
+    height: 150px;
+    width: 100%;
+    object-fit: cover;
+}
+
+ion-card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+ion-card-content p {
+    margin-bottom: auto;
+    padding-bottom: 15px;
+}
