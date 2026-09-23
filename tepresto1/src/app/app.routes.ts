@@ -30,4 +30,16 @@ export const routes: Routes = [
     path: 'agregar',
     loadComponent: () => import('./agregar/agregar.page').then( m => m.AgregarPage)
   },
+  {
+    path: 'buscar',
+    loadComponent: () => import('./buscar/buscar.page').then( m => m.BuscarPage)
+  },
+  {
+    path: 'favoritos',
+    loadComponent: () => import('./favoritos/favoritos.page').then( m => m.FavoritosPage)
+  },
+  {
+    path: 'perfil',
+    loadComponent: () => import('./perfil/perfil.page').then( m => m.PerfilPage)
+  },
 ];
