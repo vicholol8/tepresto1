@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalles del producto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (item()) {
+    <ion-img [src]="item()!.foto" [alt]="item()!.nombre"></ion-img>
+    <h1 class="ion-margin-top">{{ item()!.nombre }}</h1>
+    <ion-chip [color]="item()!.arrendado ? 'success' : 'primary'">
+      <ion-label>{{ item()!.arrendado ? 'Arrendado' : 'Disponible' }}</ion-label>
+    </ion-chip>
+
+    <div class="ion-margin-top">
+      <p><strong>Tipo:</strong> {{ item()?.tipo }}</p>
+      <p><strong>Precio:</strong> {{ item()?.precio }}</p>
+      <p><strong>Departamento:</strong> {{ item()?.depto }}</p>
+      <p><strong>Dueño:</strong> {{ item()?.dueno }}</p>
+    </div>
+
+    <h3 class="ion-margin-top">Sobre el producto</h3>
+    <p>{{ item()?.descripcion }}</p>
+    <div class="ion-margin-tops ion-padding-top">
+      @if (item()?.arrendado) {
+        <ion-button expand="block" disabled="true" color="medium">Ya fue arrendado</ion-button>
+      } @else {
+        <ion-button expand="block" color="primary" (click)="arrendar()">Arrendar producto</ion-button>
+      }
+
+      <ion-button expand="block" color="tertiary" [routerLink]="['/editar', item()?.id]" class="ion-margin-top">Editar datos</ion-button>
+
+      @if (confirmacion) {
+        <div class="ion-margin-top ion-padding" style="background: white; border-radius: 8px;">
+          <p style="color: red; text-align: center; font-weight: bold; margin-top: 0;">Estás seguro?</p>
+          <ion-button expand="block" color="danger" (click)="eliminar()">Sí, eliminar de forma definitiva</ion-button>
+          <ion-button expand="block" fill="clear" clear="medium" (click)="confirmacion = false">Cancelar</ion-button>
+        </div>
+      } @else {
+        <ion-button expand="block" color="danger" (click)="confirmacion = true" class="ion-margin-top">Eliminar producto</ion-button>
+      }
+    </div>
+  } @else {
+    <div class="ion-text-center ion-margin-top">
+      <h2>Producto no encontrado</h2>
+      <p>El producto que busca fue retirado o no existe</p>
+    </div>
+  }
+</ion-content>

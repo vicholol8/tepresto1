@@ -61,7 +61,7 @@ export class ItemService {
     this.items.update(listac => [...listac, item]);
   }
 
-  adoptar(id: String) {
+  arrendar(id: String) {
     this.items.update(lista => lista.map(item => item.id == Number(id) ? { ...item, arrendado: true} : item));
   }
 

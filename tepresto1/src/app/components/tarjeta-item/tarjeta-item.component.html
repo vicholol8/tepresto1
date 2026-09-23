@@ -7,7 +7,7 @@
   
   <ion-card-content>
     <p>Garantía: {{ item.precio }}</p>
-    <ion-button>
+    <ion-button [routerLink]="['/detalle', item.id]">
       Ver más
     </ion-button>
   </ion-card-content>
