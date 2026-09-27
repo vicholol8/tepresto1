@@ -1,32 +1,34 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>favoritos</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Mis Favoritos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
+  <ion-list>
+    @for (item of misFavoritos(); track item.id) {
+      <ion-item button [routerLink]="['/detalle', item.id]">
+        <ion-thumbnail slot="start">
+          <img [src]="item.foto" [alt]="item.nombre" />
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{ item.nombre }}</h2>
+          <p>{{ item.tipo }} - {{ item.depto }}</p>
+          <p><strong>{{ item.precio }}</strong></p>
+        </ion-label>
+        <ion-button 
+          fill="clear" 
+          slot="end" 
+          color="danger" 
+          (click)="$event.stopPropagation(); quitarFavorito(item.id)">
+          <ion-icon name="heart"></ion-icon>
+        </ion-button>
+      </ion-item>
+    } @empty {
+      <div class="ion-text-center ion-padding" style="margin-top: 2rem;">
+        <ion-icon name="heart-dislike-outline" size="large" color="medium"></ion-icon>
+        <p>Aún no has agregado productos a tus favoritos.</p>
+      </div>
+    }
+  </ion-list>
 </ion-content>
-
-  <ion-footer>
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="inicio" routerLink="/home">
-      <ion-icon name="home-outline"></ion-icon>
-      <ion-label>Inicio</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button tab="buscar" routerLink="/buscar">
-      <ion-icon name="search-outline"></ion-icon>
-      <ion-label>Buscar</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button tab="favoritos" routerLink="/favoritos">
-      <ion-icon name="heart-outline"></ion-icon>
-      <ion-label>Favoritos</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button tab="perfil" routerLink="/perfil">
-      <ion-icon name="person-outline"></ion-icon>
-      <ion-label>Mi cuenta</ion-label>
-    </ion-tab-button>
-  </ion-tab-bar>
-</ion-footer>

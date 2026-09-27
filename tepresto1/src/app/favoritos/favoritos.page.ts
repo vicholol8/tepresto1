@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFooter, IonFabButton, IonSegment, IonSegmentButton, IonLabel, IonGrid, IonRow, IonCol, IonButton, IonButtons, IonTab, IonTabBar, IonIcon, IonTabButton, IonTabs } from '@ionic/angular';
+import { IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonThumbnail, IonFab, IonFooter, IonFabButton, IonSegment, IonSegmentButton, IonLabel, IonGrid, IonRow, IonCol, IonButton, IonButtons, IonTab, IonTabBar, IonIcon, IonTabButton, IonTabs } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
 import { ItemService } from '../services/items.service';
 import { FormsModule } from '@angular/forms';
@@ -11,10 +11,28 @@ import { homeOutline, searchOutline, heartOutline, personOutline, add } from 'io
   selector: 'app-favoritos',
   templateUrl: './favoritos.page.html',
   styleUrls: ['./favoritos.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, TarjetaItem, RouterLink, FormsModule, IonLabel, IonTabBar, IonIcon, IonTabButton]
+  imports: [
+    RouterLink,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonList,
+    IonItem,
+    IonThumbnail,
+    IonLabel,
+    IonButton,
+    IonIcon
+  ]
 })
 export class FavoritosPage {
   private itemService = inject(ItemService);
+  
+  misFavoritos = this.itemService.misFavoritos;
+  
+  quitarFavorito(id: number) {
+    this.itemService.toggleFavorito(id);
+  }
 
     constructor() {
     addIcons({ homeOutline, searchOutline, heartOutline, personOutline, add });

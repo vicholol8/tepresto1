@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
 export interface Items {
   id: number;
@@ -46,6 +46,14 @@ export class ItemService {
       foto: 'https://imgs.search.brave.com/11nTnnMvk_UWveYk9Ynv7tP942fOwuEN9QiJx4OtBCQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/a29vbGF0cm9uLmNv/bS9jZG4vc2hvcC9w/cm9kdWN0cy9jb2Nh/X2NvbGFfZmFudGFf/bWluaV9mcmlkZ2Vf/Nl9jYW5fY29vbGVy/X2FuZF93YXJtZXJf/MTAuanBnP3Y9MTY2/ODcwMzcxMSZ3aWR0/aD0yMDAw', arrendado: true,
     },
   ]);
+// Señal para guardar los IDs de los productos favoritos
+  private favoritosIds = signal<number[]>([]);
+
+  // Computed Signal para filtrar automáticamente los objetos marcados como favoritos
+  readonly misFavoritos = computed(() => {
+    const ids = this.favoritosIds();
+    return this.items().filter(item => ids.includes(item.id));
+  });
 
   todas(): Items[] {
     return this.items();
@@ -70,6 +78,18 @@ export class ItemService {
   }
 
   eliminar(id: String) {
+    const numId = Number(id)
     this.items.update(lista => lista.filter(i => i.id !== Number(id)));
+    this.favoritosIds.update(ids => ids.filter(i => i !== numId));
+  }
+  toggleFavorito(id: number) {
+  const numId = Number(id);
+  this.favoritosIds.update(ids => 
+    ids.includes(numId) ? ids.filter(i => i !== numId) : [...ids, numId]
+   );
+  }
+
+  esFavorito(id: number): boolean {
+    return this.favoritosIds().includes(id);
   }
 }

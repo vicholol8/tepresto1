@@ -1,5 +1,17 @@
 <ion-card>
-  <img [src]="item.foto" [alt]="item.nombre" />
+  <div style="position: relative;">
+    <img [src]="item.foto" [alt]="item.nombre" />
+    <ion-button 
+      fill="clear" 
+      size="small"
+      style="position: absolute; top: 0; right: 0; --background: rgba(255,255,255,0.7); border-radius: 50%;"
+      (click)="toggleFav($event)">
+      <ion-icon 
+        [name]="esFav() ? 'heart' : 'heart-outline'" 
+        [color]="esFav() ? 'danger' : 'medium'">
+      </ion-icon>
+    </ion-button>
+  </div>
   <ion-card-header>
     <ion-card-title>{{ item.nombre }}</ion-card-title>
     <ion-card-subtitle>{{ item.depto }} - {{ item.dueno }} </ion-card-subtitle>

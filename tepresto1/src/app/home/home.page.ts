@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFooter, IonFabButton, IonSegment, IonSegmentButton, IonLabel, IonGrid, IonRow, IonCol, IonButton, IonButtons, IonTab, IonTabBar, IonIcon, IonTabButton, IonTabs } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonGrid, IonRow, IonCol, IonButtons, IonIcon} from '@ionic/angular';
 import { RouterLink } from '@angular/router';
 import { ItemService } from '../services/items.service';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { homeOutline, searchOutline, heartOutline, personOutline, add } from 'io
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonFooter, TarjetaItem, IonSegment, RouterLink, FormsModule, IonSegmentButton, IonLabel, IonGrid, IonRow, IonCol, IonButton, IonButtons, IonTab, IonTabBar, IonIcon, IonTabButton, IonTabs],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, TarjetaItem, RouterLink, FormsModule, IonGrid, IonRow, IonCol, IonButtons, IonIcon],
 })
 export class HomePage {
   private itemService = inject(ItemService);

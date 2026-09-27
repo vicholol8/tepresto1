@@ -1,19 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonInput, 
+  IonButton, IonText } from '@ionic/angular';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  standalone: true,
+  imports: [FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, 
+    IonInput, IonButton, IonText],
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
+  private auth = inject(AuthService);
+  private router = inject(Router);
 
-  constructor() { }
+  email = '';
+  password = '';
+  error = '';
 
-  ngOnInit() {
+  ingresar() {
+    const ok = this.auth.login(this.email, this.password);
+    if (ok) {
+      this.error = '';
+      this.router.navigate(['/home']);
+    } else {
+      this.error = 'Correo o contraseña incorrectos.';
+    }
   }
-
 }
