@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" #content>
+  <div class="chat-container">
+    @for (msg of mensajes(); track msg.id) {
+      <div class="burbuja-wrapper" [class.mio]="msg.esMio">
+        <div class="burbuja">
+          <p>{{ msg.texto }}</p>
+          <span class="hora">{{ msg.hora }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-input [(ngModel)]="nuevoMensaje" placeholder="Escribe un mensaje..." (keyup.enter)="enviar()"></ion-input>
+    <ion-button fill="clear" slot="end" (click)="enviar()">
+      <ion-icon name="send"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

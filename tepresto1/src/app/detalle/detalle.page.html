@@ -30,6 +30,10 @@
       } @else {
         <ion-button expand="block" color="primary" (click)="arrendar()">Arrendar producto</ion-button>
       }
+      <ion-button expand="block" color="secondary" [routerLink]="['/chat', item()?.id]">
+        <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
+        Hablar con el dueño
+      </ion-button>
 
       @if (esDueno()) {
         <ion-button expand="block" color="tertiary" [routerLink]="['/editar', item()?.id]" class="ion-margin-top">Editar datos</ion-button>
