@@ -1,30 +1,61 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+      <ion-back-button defaultHref="/chats"></ion-back-button>
     </ion-buttons>
-    <ion-title>Chat</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding" #content>
-  <div class="chat-container">
-    @for (msg of mensajes(); track msg.id) {
-      <div class="burbuja-wrapper" [class.mio]="msg.esMio">
-        <div class="burbuja">
-          <p>{{ msg.texto }}</p>
-          <span class="hora">{{ msg.hora }}</span>
+    @if (otro(); as o) {
+      <div class="cabecera" slot="start">
+        <ion-avatar>
+          <img [src]="o.foto" [alt]="o.nombre" />
+        </ion-avatar>
+        <div>
+          <strong>{{ o.nombre }}</strong>
+          <span>{{ o.depto }}</span>
         </div>
       </div>
+    } @else {
+      <ion-title>Chat</ion-title>
     }
-  </div>
+  </ion-toolbar>
+  @if (producto(); as p) {
+    <ion-toolbar class="producto" [routerLink]="['/detalle', p.id]">
+      <ion-icon name="cube-outline" slot="start"></ion-icon>
+      <span>{{ p.nombre }} · {{ p.precio }}</span>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (conversacion()) {
+    <div class="chat-container">
+      @for (msg of mensajes(); track msg.id) {
+        <div class="burbuja-wrapper" [class.mio]="esMio(msg.autorId)">
+          <div class="burbuja">
+            <p>{{ msg.texto }}</p>
+            <span class="hora">{{ msg.fecha | date:'HH:mm' }}</span>
+          </div>
+        </div>
+      } @empty {
+        <p class="vacio">Escribe el primer mensaje para empezar la conversación.</p>
+      }
+    </div>
+  } @else if (!cargado()) {
+    <div class="ion-text-center ion-margin-top"><ion-spinner></ion-spinner></div>
+  } @else {
+    <div class="ion-text-center ion-margin-top">
+      <h2>Conversación no encontrada</h2>
+      <p>Esta conversación no existe o no participas en ella.</p>
+    </div>
+  }
 </ion-content>
 
-<ion-footer>
-  <ion-toolbar>
-    <ion-input [(ngModel)]="nuevoMensaje" placeholder="Escribe un mensaje..." (keyup.enter)="enviar()"></ion-input>
-    <ion-button fill="clear" slot="end" (click)="enviar()">
-      <ion-icon name="send"></ion-icon>
-    </ion-button>
-  </ion-toolbar>
-</ion-footer>
+@if (conversacion()) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-input [ngModel]="nuevoMensaje()" (ngModelChange)="nuevoMensaje.set($event)" placeholder="Escribe un mensaje..." (keyup.enter)="enviar()"></ion-input>
+      <ion-button fill="clear" slot="end" (click)="enviar()" aria-label="Enviar">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+}

@@ -57,6 +57,11 @@ export const routes: Routes = [
     loadComponent: () => import('./completar-perfil/completar-perfil.page').then( m => m.CompletarPerfilPage)
   },
   {
+    path: 'chats',
+    canActivate: [authGuard],
+    loadComponent: () => import('./chats/chats.page').then( m => m.ChatsPage)
+  },
+  {
     path: 'chat/:id',
     canActivate: [authGuard],
     loadComponent: () => import('./chat/chat.page').then( m => m.ChatPage)

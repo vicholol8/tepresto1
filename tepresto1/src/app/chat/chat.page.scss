@@ -36,6 +36,7 @@
     p {
         margin: 0 0 4px 0;
         font-size: 15px;
+        white-space: pre-line;
     }
 
     .hora {
@@ -56,4 +57,44 @@ ion-footer {
         border-radius: 20px;
         --padding-start: 15px !important;
     }
+}
+
+.cabecera {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    ion-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    strong {
+        display: block;
+        font-size: 16px;
+    }
+
+    span {
+        display: block;
+        font-size: 12px;
+        color: var(--ion-color-medium);
+    }
+}
+
+.producto {
+    --min-height: 36px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ion-color-medium);
+
+    ion-icon {
+        margin-left: 12px;
+        margin-right: 6px;
+    }
+}
+
+.vacio {
+    text-align: center;
+    color: var(--ion-color-medium);
+    margin-top: 2rem;
 }

@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Mis chats</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    @for (c of conversaciones(); track c.id) {
+      <ion-item button [routerLink]="['/chat', c.id]" [class.no-leido]="noLeidos(c) > 0">
+        <ion-avatar slot="start">
+          <img [src]="otro(c)?.foto" [alt]="otro(c)?.nombre" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ otro(c)?.nombre }}</h2>
+          @if (nombreItem(c); as item) {
+            <p class="item">Sobre: {{ item }}</p>
+          }
+          <p>
+            @if (esMio(ultimo(c)!.autorId)) { <span>Tú: </span> }
+            {{ ultimo(c)!.texto }}
+          </p>
+        </ion-label>
+        <div slot="end" class="meta">
+          <ion-note>{{ ultimo(c)!.fecha | date:formatoFecha(ultimo(c)!.fecha) }}</ion-note>
+          @if (noLeidos(c) > 0) {
+            <ion-badge color="danger">{{ noLeidos(c) }}</ion-badge>
+          }
+        </div>
+      </ion-item>
+    } @empty {
+      <div class="ion-text-center ion-padding vacio">
+        <ion-icon name="chatbubbles-outline" size="large" color="medium"></ion-icon>
+        <p>Aún no tienes conversaciones.</p>
+        <p>Entra a un producto y toca "Hablar con el dueño" para empezar una.</p>
+      </div>
+    }
+  </ion-list>
+</ion-content>

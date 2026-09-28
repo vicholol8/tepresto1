@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { 
   IonTabs, 
   IonTabBar, 
   IonTabButton, 
   IonIcon, 
-  IonLabel 
+  IonLabel,
+  IonBadge
 } from '@ionic/angular';
+import { ChatService } from './services/chat.service';
 
 import { addIcons } from 'ionicons';
-import { homeOutline, searchOutline, heartOutline, personOutline, add } from 'ionicons/icons';
+import { homeOutline, searchOutline, heartOutline, personOutline, add, chatbubblesOutline } from 'ionicons/icons';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -18,11 +20,14 @@ import { homeOutline, searchOutline, heartOutline, personOutline, add } from 'io
     IonTabBar, 
     IonTabButton, 
     IonIcon, 
-    IonLabel
+    IonLabel,
+    IonBadge
   ],
 })
 export class AppComponent {
+  noLeidos = inject(ChatService).totalNoLeidos;
+
   constructor() {
-    addIcons({ homeOutline, searchOutline, heartOutline, personOutline, add });
+    addIcons({ homeOutline, searchOutline, heartOutline, personOutline, add, chatbubblesOutline });
   }
 }

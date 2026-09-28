@@ -1,0 +1,30 @@
+.item {
+    color: var(--ion-color-primary);
+    font-size: 12px;
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+
+    ion-note {
+        font-size: 12px;
+    }
+}
+
+.no-leido {
+    h2 {
+        font-weight: bold;
+    }
+
+    ion-note {
+        color: var(--ion-color-danger);
+    }
+}
+
+.vacio {
+    margin-top: 2rem;
+    color: var(--ion-color-medium);
+}
