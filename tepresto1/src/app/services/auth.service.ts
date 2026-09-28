@@ -6,16 +6,22 @@ export interface Usuario {
   nombre: string;
   depto: string;
   foto: string;
+  comunidad: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+  private codigosComunidades: Record<string, string> = {
+    'EdifiCio-A': 'Edificio A',
+    'EdifiCio-B': 'Edificio B'
+  }
   // Usuarios de prueba — reemplazar por backend real cuando exista
   private usuarios: Usuario[] = [
     { email: 'carlos@correo.com', password: '1234', nombre: 'Carlos P.', depto: 'dpto 203', 
-      foto: 'https://ui-avatars.com/api/?name=Carlos+P&background=random' },
+      foto: 'https://ui-avatars.com/api/?name=Carlos+P&background=random', comunidad: 'Edificio A' },
     { email: 'maria@correo.com', password: '1234', nombre: 'María G.', depto: 'dpto 401', 
-      foto: 'https://ui-avatars.com/api/?name=Maria+G&background=random' },
+      foto: 'https://ui-avatars.com/api/?name=Maria+G&background=random', comunidad: 'Edificio B' },
   ];
 
   private usuarioActual = signal<Usuario | null>(null);
@@ -52,5 +58,22 @@ export class AuthService {
     if (idx !== -1) {
       this.usuarios[idx] = actualizado;
     }
+  }
+
+  registrar(datos: Omit<Usuario, 'comunidad' | 'foto'>, codigoEdificio: string): { exito: boolean; mensaje: string} {
+    const nombreComunidad = this.codigosComunidades[codigoEdificio.toUpperCase()];
+    if (!nombreComunidad) {
+      return { exito: false, mensaje: 'El código de edidicio no existe.'};
+    }
+
+    if (!this.usuarios.find(u => u.email === datos.email)) {
+      return { exito: false, mensaje: 'Este correo ya está registrado.'};
+    }
+
+    const nuevoUsuario: Usuario = {...datos, foto: `https://ui-avatars.com/api/?name=${datos.nombre.replace(' ', '+')}&background=random`, comunidad: nombreComunidad};
+
+    this.usuarios.push(nuevoUsuario);
+    this.usuarioActual.set(nuevoUsuario);
+    return{ exito: true, mensaje: 'Cuenta creada con éxito.'}
   }
 }
