@@ -13,7 +13,7 @@ import { PostCard, TIPOS_POST } from '../components/post-card/post-card.componen
 import { FormProducto } from '../components/form-producto/form-producto.component';
 import { limpiar } from '../utils/campos';
 import { addIcons } from 'ionicons';
-import { add, sendOutline, checkmarkCircle } from 'ionicons/icons';
+import { add, sendOutline, checkmarkCircle, handRightOutline, giftOutline, megaphoneOutline } from 'ionicons/icons';
 
 type TipoPublicable = Exclude<TipoPost, 'producto'>;
 
@@ -73,7 +73,8 @@ export class HomePage {
   items = this.itemService.deMiComunidad;
 
   constructor() {
-    addIcons({ add, sendOutline, checkmarkCircle });
+    // Los de los tipos también: los chips del formulario se muestran aunque el muro no tenga posts
+    addIcons({ add, sendOutline, checkmarkCircle, handRightOutline, giftOutline, megaphoneOutline });
   }
 
   etiquetaFiltro(f: TipoPost | 'todos'): string {
