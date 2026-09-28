@@ -2,25 +2,25 @@
 
 TePresto is an Ionic + Angular mobile/web application for listing and renting household or shared items within a building or community. It allows users to browse available items, search and favorite them, log in, manage their own listings, and mark items as rented.
 
-This project is still under active development. Data and authentication live in [Supabase](https://supabase.com): Postgres tables protected by Row Level Security (each user only sees their own building), Supabase Auth for accounts (email + password, with email confirmation), and Realtime so new items, posts, messages and loan updates appear without reloading. The rental rules (dates, owners, states) run as database functions.
+This project is still under active development. Data and authentication live in [Supabase](https://supabase.com): Postgres tables protected by Row Level Security (each user only sees their own building), Supabase Storage for product photos, Supabase Auth for accounts (email + password, with email confirmation), and Realtime so new items, posts, messages and loan updates appear without reloading. The rental rules (dates, owners, states) run as database functions.
 
 ## Features
 
-- Community wall (Inicio → Muro): post Busco / Ofrezco / Aviso, every new product is also posted there, filter by post type, public comments on each post, and "Contactar" / "Yo te presto" to open a private chat with the author
+- Community wall (Inicio → Muro): post Busco / Ofrezco / Aviso (an Ofrezco can create a new product right there or pick one of your published products), every new product is also posted there, filter by post type, public comments on each post, and "Contactar" / "Yo te presto" to open a private chat with the author
 - Browse the product grid of your building (Inicio → Productos)
 - Search items by name, category, or description, plus wall posts by text or author
-- Mark items as favorites (saved per user) and view them in a dedicated screen
+- Mark items as favorites (saved per user) and view them from Perfil → Mis favoritos
 - View item details by route parameter
 - Request to rent an item for a date range; the owner accepts or rejects it and later marks it as returned (each step is also sent to both people's chat)
 - "Mis préstamos" screen (from Perfil) with what you asked for and what you lend, plus a badge for requests waiting for your answer
 - Sign up and log in with a real account (Supabase Auth); accounts without a building are sent to a "complete profile" screen to enter the building code
-- Add a new item, automatically attributed to the logged-in user
+- Add a new item with a photo uploaded from the phone or computer (stored in Supabase Storage, resized before upload), automatically attributed to the logged-in user
 - Edit or delete an item, restricted to its owner only
 - View and edit your own profile (name, apartment, photo) and see your own published items
 - Chat with the owner of an item from its detail page; a Chats tab lists your conversations with an unread-messages badge
 - Register with a building access code; each user only sees the items of their own community (building)
 - Route guards that redirect unauthenticated users to the login screen (every route except login and registration)
-- Navigate between home, search, favorites, and profile screens via a single global tab bar
+- Navigate between home, search, chats and profile screens via a single global tab bar (favorites and loans are opened from the profile)
 - Build as a web app and prepare for Capacitor native integration
 
 ## Tech stack
@@ -29,7 +29,7 @@ This project is still under active development. Data and authentication live in 
 - Ionic Angular 9
 - Angular Router
 - TypeScript
-- Supabase (Postgres + RLS, Auth, Realtime) via `@supabase/supabase-js`
+- Supabase (Postgres + RLS, Auth, Realtime, Storage) via `@supabase/supabase-js`
 - SCSS
 - Vitest / JSDOM
 - Capacitor 8
@@ -48,7 +48,7 @@ This project is still under active development. Data and authentication live in 
 │   │   │   ├── components/    # Reusable UI components (item card, wall post card, rental panel)
 │   │   │   ├── detalle/       # Item detail page (edit/delete shown to owner only)
 │   │   │   ├── editar/        # Edit screen scaffold
-│   │   │   ├── favoritos/     # Favorites screen
+│   │   │   ├── favoritos/     # Favorites screen (opened from Perfil)
 │   │   │   ├── guards/        # Route guards (auth guard)
 │   │   │   ├── home/          # Main item listing screen
 │   │   │   ├── login/         # Login screen (Supabase Auth)
