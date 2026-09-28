@@ -1,14 +1,15 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonAvatar, IonList, IonItem, 
-  IonThumbnail, IonLabel, IonButton, IonIcon, IonText, IonInput, IonBadge } from '@ionic/angular';
+  IonThumbnail, IonLabel, IonButton, IonIcon, IonText, IonInput, IonBadge, IonToggle } from '@ionic/angular';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ItemService } from '../services/items.service';
 import { AuthService } from '../services/auth.service';
 import { PrestamoService } from '../services/prestamo.service';
+import { TemaService } from '../services/tema.service';
 import { addIcons } from 'ionicons';
 import { locationOutline, mailOutline, logOutOutline, createOutline, 
-  checkmarkOutline, closeOutline, swapHorizontalOutline, heartOutline } from 'ionicons/icons';
+  checkmarkOutline, closeOutline, swapHorizontalOutline, heartOutline, moonOutline, sunnyOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-perfil',
@@ -16,7 +17,7 @@ import { locationOutline, mailOutline, logOutOutline, createOutline,
   styleUrls: ['./perfil.page.scss'],
   standalone: true,
   imports: [RouterLink, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, 
-    IonAvatar, IonList, IonItem, IonThumbnail, IonLabel, IonButton, IonIcon, IonText, IonInput, IonBadge]
+    IonAvatar, IonList, IonItem, IonThumbnail, IonLabel, IonButton, IonIcon, IonText, IonInput, IonBadge, IonToggle]
 })
 export class PerfilPage {
   private itemService = inject(ItemService);
@@ -25,6 +26,8 @@ export class PerfilPage {
 
   usuario = computed(() => this.auth.usuario());
   porResponder = inject(PrestamoService).solicitudesPorResponder;
+  tema = inject(TemaService);
+  oscuro = this.tema.oscuro;
   cantidadFavoritos = computed(() => this.itemService.misFavoritos().length);
 
   misItems = computed(() => {
@@ -39,7 +42,7 @@ export class PerfilPage {
   form = { nombre: '', depto: '', foto: '' };
 
   constructor() {
-    addIcons({ locationOutline, mailOutline, logOutOutline, createOutline, checkmarkOutline, closeOutline, swapHorizontalOutline, heartOutline });
+    addIcons({ locationOutline, mailOutline, logOutOutline, createOutline, checkmarkOutline, closeOutline, swapHorizontalOutline, heartOutline, moonOutline, sunnyOutline });
   }
 
   activarEdicion() {

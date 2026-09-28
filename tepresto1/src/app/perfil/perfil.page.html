@@ -72,6 +72,10 @@
           <ion-badge slot="end" color="medium">{{ cantidadFavoritos() }}</ion-badge>
         }
       </ion-item>
+      <ion-item>
+        <ion-icon [name]="oscuro() ? 'moon-outline' : 'sunny-outline'" slot="start"></ion-icon>
+        <ion-toggle [checked]="oscuro()" (ionChange)="tema.cambiar($event.detail.checked)">Modo oscuro</ion-toggle>
+      </ion-item>
     </ion-list>
 
     <h3 class="ion-padding-top">Mis publicaciones</h3>
