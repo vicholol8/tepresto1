@@ -3,6 +3,8 @@ import { IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
   IonButton, IonIcon } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
 import { ItemService, Items } from '../../services/items.service';
+import { addIcons } from 'ionicons';
+import { heart, heartOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tarjeta-item',
@@ -16,6 +18,10 @@ export class TarjetaItem {
   @Input() item!: Items;
 
   private itemService = inject(ItemService);
+
+  constructor() {
+    addIcons({ heart, heartOutline });
+  }
 
   toggleFav(event: Event) {
     event.stopPropagation();

@@ -9,7 +9,7 @@ import { TIPOS_POST } from '../components/post-card/post-card.component';
 import { FormsModule } from '@angular/forms';
 import { TarjetaItem } from '../components/tarjeta-item/tarjeta-item.component';
 import { addIcons } from 'ionicons';
-import { homeOutline, searchOutline, heartOutline, personOutline, add } from 'ionicons/icons';
+import { homeOutline, searchOutline, heart, heartOutline, personOutline, add } from 'ionicons/icons';
 
 @Component({
   selector: 'app-buscar',
@@ -54,7 +54,7 @@ export class BuscarPage {
   }
 
   constructor() { 
-    addIcons({ homeOutline, searchOutline, heartOutline, personOutline, add });
+    addIcons({ homeOutline, searchOutline, heart, heartOutline, personOutline, add });
   }
 
   dueno(item: Items) {

@@ -11,7 +11,7 @@ import { ChatService } from './services/chat.service';
 import { PrestamoService } from './services/prestamo.service';
 
 import { addIcons } from 'ionicons';
-import { homeOutline, searchOutline, heartOutline, personOutline, add, chatbubblesOutline } from 'ionicons/icons';
+import { homeOutline, searchOutline, personOutline, add, chatbubblesOutline } from 'ionicons/icons';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -30,6 +30,6 @@ export class AppComponent {
   porResponder = inject(PrestamoService).solicitudesPorResponder;
 
   constructor() {
-    addIcons({ homeOutline, searchOutline, heartOutline, personOutline, add, chatbubblesOutline });
+    addIcons({ homeOutline, searchOutline, personOutline, add, chatbubblesOutline });
   }
 }

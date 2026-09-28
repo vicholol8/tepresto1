@@ -8,7 +8,7 @@ import { AuthService } from '../services/auth.service';
 import { PrestamoService } from '../services/prestamo.service';
 import { addIcons } from 'ionicons';
 import { locationOutline, mailOutline, logOutOutline, createOutline, 
-  checkmarkOutline, closeOutline, swapHorizontalOutline } from 'ionicons/icons';
+  checkmarkOutline, closeOutline, swapHorizontalOutline, heartOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-perfil',
@@ -25,6 +25,7 @@ export class PerfilPage {
 
   usuario = computed(() => this.auth.usuario());
   porResponder = inject(PrestamoService).solicitudesPorResponder;
+  cantidadFavoritos = computed(() => this.itemService.misFavoritos().length);
 
   misItems = computed(() => {
     const u = this.usuario();
@@ -38,7 +39,7 @@ export class PerfilPage {
   form = { nombre: '', depto: '', foto: '' };
 
   constructor() {
-    addIcons({ locationOutline, mailOutline, logOutOutline, createOutline, checkmarkOutline, closeOutline, swapHorizontalOutline });
+    addIcons({ locationOutline, mailOutline, logOutOutline, createOutline, checkmarkOutline, closeOutline, swapHorizontalOutline, heartOutline });
   }
 
   activarEdicion() {

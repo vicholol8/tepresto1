@@ -65,6 +65,13 @@
           <ion-badge slot="end" color="danger">{{ porResponder() }} por responder</ion-badge>
         }
       </ion-item>
+      <ion-item button routerLink="/favoritos" detail="true">
+        <ion-icon name="heart-outline" slot="start"></ion-icon>
+        <ion-label>Mis favoritos</ion-label>
+        @if (cantidadFavoritos() > 0) {
+          <ion-badge slot="end" color="medium">{{ cantidadFavoritos() }}</ion-badge>
+        }
+      </ion-item>
     </ion-list>
 
     <h3 class="ion-padding-top">Mis publicaciones</h3>
