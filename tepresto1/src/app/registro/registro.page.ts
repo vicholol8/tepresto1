@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -20,24 +20,34 @@ export class RegistroPage {
   email = '';
   password = '';
   codigo = '';
-  error = '';
+  // Signals: se actualizan después de un await y la app es zoneless
+  error = signal('');
+  // Si Supabase pide confirmar el correo, se muestra este aviso en vez de entrar
+  confirmacion = signal('');
+  cargando = signal(false);
 
-  crearCuenta() {
-    if (!this.nombre || !this.email || !this.password || !this.codigo || !this.depto) {
-      this.error = 'Por favor, completa todos los campos.'
+  async crearCuenta() {
+    if (!this.nombre.trim() || !this.email.trim() || !this.password || !this.codigo.trim() || !this.depto.trim()) {
+      this.error.set('Por favor, completa todos los campos.');
       return;
     }
 
-    const resultado = this.auth.registrar(
+    this.cargando.set(true);
+    const resultado = await this.auth.registrar(
       { nombre: this.nombre, email: this.email, password: this.password, depto: this.depto },
       this.codigo
     );
+    this.cargando.set(false);
 
-    if (resultado.exito) {
-      this.error = '';
-      this.router.navigate(['/home']);
+    if (!resultado.exito) {
+      this.error.set(resultado.mensaje);
+      return;
+    }
+    this.error.set('');
+    if (resultado.requiereConfirmacion) {
+      this.confirmacion.set(resultado.mensaje);
     } else {
-      this.error = resultado.mensaje;
+      this.router.navigate(['/home']);
     }
   }
 }

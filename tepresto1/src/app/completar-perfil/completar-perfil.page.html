@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Únete a tu comunidad</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2 class="ion-text-center ion-padding-top">Hola{{ usuario()?.nombre ? ', ' + usuario()!.nombre : '' }} 👋</h2>
+  <p class="ion-text-center ayuda">
+    Para ver lo que prestan tus vecinos, ingresa el código de tu edificio.
+    Pídeselo a la administración.
+  </p>
+
+  <ion-item>
+    <ion-input label="Código del edificio" labelPlacement="floating" type="text" [(ngModel)]="codigo"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input label="Número de departamento" labelPlacement="floating" type="text" [(ngModel)]="depto"></ion-input>
+  </ion-item>
+
+  @if (error()) {
+    <ion-text color="danger">
+      <p class="ion-padding-start">{{ error() }}</p>
+    </ion-text>
+  }
+
+  <ion-button expand="block" class="ion-margin-top" (click)="unirse()" [disabled]="cargando()">
+    {{ cargando() ? 'Uniéndote...' : 'Unirme' }}
+  </ion-button>
+  <ion-button expand="block" fill="clear" color="medium" (click)="salir()">Cerrar sesión</ion-button>
+</ion-content>

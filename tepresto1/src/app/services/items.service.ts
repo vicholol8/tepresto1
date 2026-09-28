@@ -1,95 +1,136 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject, effect, untracked } from '@angular/core';
+import { SupabaseService, Resultado } from './supabase.service';
+import { AuthService, Usuario } from './auth.service';
+import { Fila } from './database.types';
 
 export interface Items {
   id: number;
   nombre: string;
   tipo: string;
   precio: string;
-  depto: string;
-  dueno: string;
+  duenoId: string;
+  comunidadId: number;
   descripcion: string;
   foto: string;
   arrendado: boolean;
+  arrendadoHasta: string | null; // 'YYYY-MM-DD'
+}
+
+export type DatosItem = Pick<Items, 'nombre' | 'tipo' | 'precio' | 'descripcion' | 'foto'>;
+
+function aItem(f: Fila<'items'>): Items {
+  return {
+    id: f.id, nombre: f.nombre, tipo: f.tipo, precio: f.precio, duenoId: f.dueno_id,
+    comunidadId: f.comunidad_id, descripcion: f.descripcion, foto: f.foto,
+    arrendado: f.arrendado, arrendadoHasta: f.arrendado_hasta,
+  };
 }
 
 @Injectable({ providedIn: 'root' })
 export class ItemService {
-  private items = signal<Items[]>([
-    {
-      id: 1, nombre: 'Taladro Bosch', tipo: 'Herramienta', precio: '$5000', depto: 'dpto 203',
-      dueno: 'Carlos P.', descripcion: 'Taladro bosch con 1 año de uso. Buen estado',
-      foto: 'https://imgs.search.brave.com/ttRIiCDV7sZp0QUG7Rd0vscjsAfdYEidlf55THExLi4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL3hMd0FB/ZVN3aUNKcWo5ci0v/cy1sNDAwLndlYnA', arrendado: false,
-    },
-    {
-      id: 2, nombre: 'Proyector HD', tipo: 'Tecnología', precio: '$15000', depto: 'dpto 401',
-      dueno: 'María G.', descripcion: 'Proyector para ver pelicas, televisión, etc. Buen estado',
-      foto: 'https://imgs.search.brave.com/ZczcuayOUBObUv3_0zqkwTii7_IAS3vi9QhQApIFrGg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL3Ro/dW1icy9pbWFnZXMv/Zy9GOFFBQU9Td3d1/RmtRWlBBL3MtbDQw/MC53ZWJw', arrendado: false,
-    },
-    {
-      id: 3, nombre: 'Carpa camping', tipo: 'Camping', precio: '$25000', depto: 'dpto 101',
-      dueno: 'Javiera L.', descripcion: 'Buen estado',
-      foto: 'https://imgs.search.brave.com/hbfkVIAOiqwCPBphNMWzIbCgnl553l4SEZgDu4ZXpk0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9ib3Nz/Y2FtcC5jbC9jZG4v/c2hvcC9maWxlcy9D/YXJwYV9DYW1waW5n/X1F1aW50YXlfNF9Q/ZXJzb25hc18zMDAw/X01tX0N1YnJlX1Rl/Y2hvX0xhcmdvXy1f/My5qcGc_dj0xNzYy/ODg2MzcwJndpZHRo/PTUzMw', arrendado: true,
-    },
-    {
-      id: 4, nombre: 'Escalera 5m', tipo: 'Herramientas', precio: '$8000', depto: 'dpto 802',
-      dueno: 'Roberto S.', descripcion: 'Escalera firme y en buen estado',
-      foto: 'https://imgs.search.brave.com/fOLv2SDM2PEqyYmMlvLXwAsep-qJEiz3HwhJ_p_S68w/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL0kv/NDFmelJhNDRJRVMu/anBn', arrendado: true,
-    },
-    {
-      id: 5, nombre: 'Hervidor para fiestas', tipo: 'Cocina', precio: '$4000', depto: 'dpto 701',
-      dueno: 'Ana M.', descripcion: 'Hervidor con capacidad de 30 litros para fiestas',
-      foto: 'https://imgs.search.brave.com/T-ez2sWXBm4gK2aiXn_wV-d9eyb3XdgCtwkvOo6RgIE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGV3/YXJkLmNsLzU0MTIt/aG9tZV9kZWZhdWx0/L2hlcnZpZG9yLWRl/LWFndWEtMzAtbGl0/cm9zLWJpZy1jaGVm/LmpwZw', arrendado: false,
-    },
-    {
-      id: 6, nombre: 'Mini cooler', tipo: 'Cocina', precio: '$3000', depto: 'dpto 606',
-      dueno: 'Diego F.', descripcion: 'Mini cooler para poner bebidas, cervezas, etc. Buen estado y no descongela rápidamente',
-      foto: 'https://imgs.search.brave.com/11nTnnMvk_UWveYk9Ynv7tP942fOwuEN9QiJx4OtBCQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/a29vbGF0cm9uLmNv/bS9jZG4vc2hvcC9w/cm9kdWN0cy9jb2Nh/X2NvbGFfZmFudGFf/bWluaV9mcmlkZ2Vf/Nl9jYW5fY29vbGVy/X2FuZF93YXJtZXJf/MTAuanBnP3Y9MTY2/ODcwMzcxMSZ3aWR0/aD0yMDAw', arrendado: true,
-    },
-  ]);
-// Señal para guardar los IDs de los productos favoritos
-  private favoritosIds = signal<number[]>([]);
+  private sb = inject(SupabaseService);
+  private supabase = this.sb.client;
+  private auth = inject(AuthService);
 
-  // Computed Signal para filtrar automáticamente los objetos marcados como favoritos
+  private items = signal<Items[]>([]);
+  private favoritosIds = signal<number[]>([]);
+  readonly cargado = signal(false);
+  // Se resuelve con la primera carga de la sesión actual
+  private cargaLista!: Promise<void>;
+  private resolverCarga!: () => void;
+
+  // RLS ya limita los items a la comunidad del usuario
+  readonly deMiComunidad = computed(() => this.items());
+
   readonly misFavoritos = computed(() => {
     const ids = this.favoritosIds();
     return this.items().filter(item => ids.includes(item.id));
   });
 
-  todas(): Items[] {
-    return this.items();
+  constructor() {
+    this.reiniciarEspera();
+    // Carga y escucha cambios cada vez que cambia el usuario o su comunidad
+    effect(onCleanup => {
+      const clave = this.auth.claveSesion();
+      untracked(() => {
+        this.items.set([]);
+        this.favoritosIds.set([]);
+        if (this.cargado()) this.reiniciarEspera();
+        this.cargado.set(false);
+        if (!clave) return;
+        this.cargar();
+        onCleanup(this.sb.escuchar('items', ['items'], () => this.cargar()));
+      });
+    });
   }
 
-  obtener(id: String): Items | undefined {
+  // Para pantallas que necesitan los datos antes de decidir algo (p. ej. editar)
+  esperarCarga(): Promise<void> {
+    return this.cargaLista;
+  }
+
+  private reiniciarEspera() {
+    this.cargaLista = new Promise(resolve => this.resolverCarga = resolve);
+  }
+
+  // Público para que PrestamoService refresque el estado de arriendo al tiro
+  async cargar() {
+    const [items, favoritos] = await Promise.all([
+      this.supabase.from('items').select('*').order('created_at', { ascending: false }),
+      this.supabase.from('favoritos').select('item_id'),
+    ]);
+    this.items.set((items.data ?? []).map(aItem));
+    this.favoritosIds.set((favoritos.data ?? []).map(f => f.item_id));
+    this.cargado.set(true);
+    this.resolverCarga();
+  }
+
+  obtener(id: String | number): Items | undefined {
     return this.items().find(i => i.id === Number(id));
   }
 
-  agregar(item: Items): void {
-    const idAlto = Math.max(...this.items().map(i => i.id));
-    item.id = idAlto +1
-    this.items.update(listac => [...listac, item]);
+  dueno(item: Items): Usuario | undefined {
+    return this.auth.obtenerUsuario(item.duenoId);
   }
 
-  arrendar(id: String) {
-    this.items.update(lista => lista.map(item => item.id == Number(id) ? { ...item, arrendado: true} : item));
+  // El trigger de la base también lo publica en el muro
+  async agregar(datos: DatosItem): Promise<Resultado> {
+    if (!datos.nombre.trim()) return { exito: false, mensaje: 'Ponle un nombre al producto.' };
+    const { error } = await this.supabase.from('items').insert(this.limpiar(datos));
+    if (!error) await this.cargar();
+    return this.sb.resultado(error, 'Producto publicado.');
   }
 
-  editar(item: Items) {
-    this.items.update(lista => lista.map(i => i.id === item.id ? item : i));
+  async editar(id: number, datos: DatosItem): Promise<Resultado> {
+    const { error } = await this.supabase.from('items').update(this.limpiar(datos)).eq('id', id);
+    if (!error) await this.cargar();
+    return this.sb.resultado(error, 'Cambios guardados.');
   }
 
-  eliminar(id: String) {
-    const numId = Number(id)
-    this.items.update(lista => lista.filter(i => i.id !== Number(id)));
-    this.favoritosIds.update(ids => ids.filter(i => i !== numId));
+  async eliminar(id: number): Promise<Resultado> {
+    const { error } = await this.supabase.from('items').delete().eq('id', id);
+    if (!error) await this.cargar();
+    return this.sb.resultado(error, 'Producto eliminado.');
   }
-  toggleFavorito(id: number) {
-  const numId = Number(id);
-  this.favoritosIds.update(ids => 
-    ids.includes(numId) ? ids.filter(i => i !== numId) : [...ids, numId]
-   );
+
+  async toggleFavorito(id: number) {
+    const yaEra = this.esFavorito(id);
+    // Optimista: se actualiza al tiro y se revierte si falla
+    this.favoritosIds.update(ids => yaEra ? ids.filter(i => i !== id) : [...ids, id]);
+    const { error } = yaEra
+      ? await this.supabase.from('favoritos').delete().eq('item_id', id)
+      : await this.supabase.from('favoritos').insert({ item_id: id });
+    if (error) {
+      this.favoritosIds.update(ids => yaEra ? [...ids, id] : ids.filter(i => i !== id));
+    }
   }
 
   esFavorito(id: number): boolean {
     return this.favoritosIds().includes(id);
+  }
+
+  private limpiar(d: DatosItem): DatosItem {
+    return { nombre: d.nombre.trim(), tipo: d.tipo.trim(), precio: d.precio.trim(),
+      descripcion: d.descripcion.trim(), foto: d.foto.trim() };
   }
 }

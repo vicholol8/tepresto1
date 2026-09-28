@@ -14,22 +14,18 @@
     <ion-input label="Contraseña" labelPlacement="floating" type="password" [(ngModel)]="password"></ion-input>
   </ion-item>
 
-  @if (error) {
+  @if (error()) {
     <ion-text color="danger">
-      <p class="ion-padding-start">{{ error }}</p>
+      <p class="ion-padding-start">{{ error() }}</p>
     </ion-text>
   }
 
-  <ion-button expand="block" class="ion-margin-top" (click)="ingresar()">
-    Ingresar
+  <ion-button expand="block" class="ion-margin-top" (click)="ingresar()" [disabled]="cargando()">
+    {{ cargando() ? 'Ingresando...' : 'Ingresar' }}
   </ion-button>
 
   <div class="ion-text-center ion-margin-top" style="display: flex; justify-content: center; align-items: center;">
     <ion-text color="medium">No tienes cuenta?</ion-text>
     <ion-button fill="clear" color="secondary" routerLink="/registro">Registrate aquí</ion-button>
   </div>
-
-  <ion-text color="medium">
-    <p class="ion-text-center">Prueba: carlos&#64;correo.com / 1234</p>
-  </ion-text>
 </ion-content>
