@@ -7,10 +7,29 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">registro</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content clas="ion-padding">
+  <h2 class="ion-text-center ion-padding-top">Únete a tu comunidad</h2>
+  <p class="ion-text-center ion-margin-bottom" style="color: gray; font-size: 0.9em;">Pídele el código de acceso a la administración de tu edificio</p>
+  <ion-item>
+    <ion-input label="Nombre y apellido" lablePlacement="floating" type="text" [(ngModel)]="nombre"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input label="Número de departamento" lablePlacement="floating" type="text" [(ngModel)]="depto"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input label="Correo electrónico" lablePlacement="floating" type="email" [(ngModel)]="email"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input label="Contraseña" lablePlacement="floating" type="password" [(ngModel)]="password"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top" color="light">
+    <ion-input label="Código del edificio" lablePlacement="floating" type="text" [(ngModel)]="codigo"></ion-input>
+  </ion-item>
+
+  @if (error) {
+    <ion-text color="danger">
+      <p class="ion-padding-start">{{ error }}</p>
+    </ion-text>
+  }
+  <ion-button expand="block" class="ion-margin-top" (click)="crearCuenta()">Registrarme</ion-button>
 </ion-content>
