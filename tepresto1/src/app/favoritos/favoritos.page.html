@@ -13,7 +13,7 @@
         </ion-thumbnail>
         <ion-label>
           <h2>{{ item.nombre }}</h2>
-          <p>{{ item.tipo }} - {{ item.depto }}</p>
+          <p>{{ item.tipo }} - {{ dueno(item)?.depto }}</p>
           <p><strong>{{ item.precio }}</strong></p>
         </ion-label>
         <ion-button 

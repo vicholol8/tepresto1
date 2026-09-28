@@ -1,9 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButtons, 
-  IonBackButton, IonButton, IonTextarea } from '@ionic/angular';
-import { ItemService } from '../services/items.service';
-import { AuthService } from '../services/auth.service';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButtons,
+  IonBackButton, IonButton, IonTextarea, IonText } from '@ionic/angular';
+import { ItemService, DatosItem } from '../services/items.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,24 +10,32 @@ import { Router } from '@angular/router';
   templateUrl: './agregar.page.html',
   styleUrls: ['./agregar.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButtons, 
-    IonBackButton, IonButton, FormsModule, IonTextarea]
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButtons,
+    IonBackButton, IonButton, FormsModule, IonTextarea, IonText]
 })
 export class AgregarPage {
   private itemService = inject(ItemService);
-  private auth = inject(AuthService);
   private router = inject(Router);
 
-  nuevoItem: any = {
-    id: 0, foto: '', nombre: '', tipo: '', precio: '', depto: '',
-    descripcion: '', arrendado: false
-  };
+  // El dueño y la comunidad los pone la base a partir de la sesión
+  nuevoItem: DatosItem = { foto: '', nombre: '', tipo: '', precio: '', descripcion: '' };
 
-  guardar() {
-    const usuario = this.auth.usuario();
-    if (!usuario) return; // el guard ya debería impedir llegar aquí sin sesión
-    this.nuevoItem.dueno = usuario.nombre;
-    this.itemService.agregar(this.nuevoItem);
-    this.router.navigate(['/']);
+  // Signals: se actualizan después de un await y la app es zoneless
+  error = signal('');
+  guardando = signal(false);
+
+  async guardar() {
+    if (!this.nuevoItem.nombre.trim() || !this.nuevoItem.tipo.trim() || !this.nuevoItem.precio.trim()) {
+      this.error.set('Nombre, tipo y precio son obligatorios.');
+      return;
+    }
+    this.guardando.set(true);
+    const r = await this.itemService.agregar(this.nuevoItem);
+    this.guardando.set(false);
+    if (!r.exito) {
+      this.error.set(r.mensaje);
+      return;
+    }
+    this.router.navigate(['/home']);
   }
 }

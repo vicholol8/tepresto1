@@ -22,6 +22,10 @@ export class TarjetaItem {
     this.itemService.toggleFavorito(this.item.id);
   }
 
+  dueno() {
+    return this.itemService.dueno(this.item);
+  }
+
   esFav(): boolean {
     return this.itemService.esFavorito(this.item.id);
   }

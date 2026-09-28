@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { IonList, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonThumbnail, IonFab, IonFooter, IonFabButton, IonSegment, IonSegmentButton, IonLabel, IonGrid, IonRow, IonCol, IonButton, IonButtons, IonTab, IonTabBar, IonIcon, IonTabButton, IonTabs } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
-import { ItemService } from '../services/items.service';
+import { ItemService, Items } from '../services/items.service';
 import { FormsModule } from '@angular/forms';
 import { TarjetaItem } from '../components/tarjeta-item/tarjeta-item.component';
 import { addIcons } from 'ionicons';
@@ -30,6 +30,10 @@ export class FavoritosPage {
   
   misFavoritos = this.itemService.misFavoritos;
   
+  dueno(item: Items) {
+    return this.itemService.dueno(item);
+  }
+
   quitarFavorito(id: number) {
     this.itemService.toggleFavorito(id);
   }

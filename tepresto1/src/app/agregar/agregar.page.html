@@ -24,17 +24,17 @@
     fill="solid" label="Precio" labelPlacement="stacked" placeholder="Mínimo $1000" [(ngModel)]="nuevoItem.precio" class="ion-margin-bottom">
   </ion-input>
 
-  <ion-input
-    fill="solid" label="Departamento" labelPlacement="stacked" placeholder="Ej: 406" [(ngModel)]="nuevoItem.depto" class="ion-margin-bottom">
-  </ion-input>
-
-  <ion-input
-    fill="solid" label="Dueño" labelPlacement="stacked" placeholder="Tú nombre" [(ngModel)]="nuevoItem.dueno" class="ion-margin-bottom">
-  </ion-input>
-
   <ion-textarea
     fill="solid" label="Descripción" labelPlacement="stacked" placeholder="Ej: Buen estado..." [(ngModel)]="nuevoItem.descripcion" class="ion-margin-bottom" autoGrow="true">
   </ion-textarea>
 
-  <ion-button expand="block" (click)="guardar()" class="ion-margin-top">Guardar item</ion-button>
+  @if (error()) {
+    <ion-text color="danger">
+      <p>{{ error() }}</p>
+    </ion-text>
+  }
+
+  <ion-button expand="block" (click)="guardar()" class="ion-margin-top" [disabled]="guardando()">
+    {{ guardando() ? 'Publicando...' : 'Guardar item' }}
+  </ion-button>
 </ion-content>

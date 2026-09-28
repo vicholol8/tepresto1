@@ -1,13 +1,42 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>editar</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'/detalle/' + id"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Editar item</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">editar</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  @if (form(); as f) {
+    <ion-input
+      fill="solid" label="Foto (url)" labelPlacement="stacked" placeholder="https://ejemplo.com/foto.jpg" [(ngModel)]="f.foto" class="ion-margin-bottom">
+    </ion-input>
+
+    <ion-input
+      fill="solid" label="Nombre del producto" labelPlacement="stacked" placeholder="Ej: Destornillador" [(ngModel)]="f.nombre" class="ion-margin-bottom">
+    </ion-input>
+
+    <ion-input
+      fill="solid" label="Tipo" labelPlacement="stacked" placeholder="Ej: Herramienta/Cocina/Otro" [(ngModel)]="f.tipo" class="ion-margin-bottom">
+    </ion-input>
+
+    <ion-input
+      fill="solid" label="Precio" labelPlacement="stacked" placeholder="Mínimo $1000" [(ngModel)]="f.precio" class="ion-margin-bottom">
+    </ion-input>
+
+    <ion-textarea
+      fill="solid" label="Descripción" labelPlacement="stacked" placeholder="Ej: Buen estado..." [(ngModel)]="f.descripcion" class="ion-margin-bottom" autoGrow="true">
+    </ion-textarea>
+
+    @if (error()) {
+      <ion-text color="danger">
+        <p>{{ error() }}</p>
+      </ion-text>
+    }
+
+    <ion-button expand="block" (click)="guardar()" class="ion-margin-top" [disabled]="guardando()">
+      {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+    </ion-button>
+  }
 </ion-content>
