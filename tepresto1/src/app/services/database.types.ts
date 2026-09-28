@@ -102,6 +102,7 @@ export type Database = {
       marcar_devuelto: { Args: { p_id: number }; Returns: undefined }
       marcar_leida: { Args: { p_conversacion: number }; Returns: undefined }
       mi_comunidad: { Args: never; Returns: number }
+      ofrecer_producto_nuevo: { Args: { p_nombre: string; p_tipo: string; p_precio: string; p_descripcion: string; p_foto: string; p_texto: string }; Returns: number }
       rechazar_prestamo: { Args: { p_id: number }; Returns: undefined }
       solicitar_prestamo: { Args: { p_desde: string; p_hasta: string; p_item: number; p_mensaje?: string }; Returns: number }
       unirse_comunidad: { Args: { p_codigo: string; p_depto: string }; Returns: string }

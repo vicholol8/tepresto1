@@ -1,18 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButtons,
-  IonBackButton, IonButton, IonTextarea, IonText, NavController } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
+  IonBackButton, IonButton, IonText, NavController } from '@ionic/angular';
 import { ItemService, DatosItem } from '../services/items.service';
 import { AuthService } from '../services/auth.service';
+import { FormProducto } from '../components/form-producto/form-producto.component';
 
 @Component({
   selector: 'app-editar',
   templateUrl: './editar.page.html',
   styleUrls: ['./editar.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButtons,
-    IonBackButton, IonButton, IonTextarea, IonText, FormsModule]
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
+    IonBackButton, IonButton, IonText, FormProducto]
 })
 export class EditarPage {
   private route = inject(ActivatedRoute);
@@ -26,6 +26,7 @@ export class EditarPage {
   // Borrador editable; null mientras se cargan los datos. Signals porque se llenan después de
   // un await y la app es zoneless.
   form = signal<DatosItem | null>(null);
+  foto = signal<File | null>(null);
   error = signal('');
   guardando = signal(false);
 
@@ -50,13 +51,14 @@ export class EditarPage {
     const datos = this.form();
     if (!datos) return;
 
-    if (!datos.nombre.trim() || !datos.tipo.trim() || !datos.precio.trim()) {
-      this.error.set('Nombre, tipo y precio son obligatorios.');
+    const invalido = this.itemService.validar(datos);
+    if (invalido) {
+      this.error.set(invalido);
       return;
     }
 
     this.guardando.set(true);
-    const r = await this.itemService.editar(Number(this.id), datos);
+    const r = await this.itemService.editar(Number(this.id), datos, this.foto());
     this.guardando.set(false);
     if (!r.exito) {
       this.error.set(r.mensaje);

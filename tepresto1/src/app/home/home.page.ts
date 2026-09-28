@@ -1,19 +1,25 @@
 import { Component, inject, signal, computed, viewChild } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonGrid, IonRow, IonCol,
   IonIcon, IonSegment, IonSegmentButton, IonLabel, IonCard, IonCardContent, IonTextarea, IonButton,
-  IonChip, IonSpinner, IonText } from '@ionic/angular';
+  IonChip, IonSpinner, IonText, IonThumbnail } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ItemService } from '../services/items.service';
+import { ItemService, DatosItem } from '../services/items.service';
+import { Resultado } from '../services/supabase.service';
 import { MuroService, TipoPost } from '../services/muro.service';
 import { AuthService } from '../services/auth.service';
 import { TarjetaItem } from '../components/tarjeta-item/tarjeta-item.component';
 import { PostCard, TIPOS_POST } from '../components/post-card/post-card.component';
+import { FormProducto } from '../components/form-producto/form-producto.component';
 import { limpiar } from '../utils/campos';
 import { addIcons } from 'ionicons';
-import { add, sendOutline } from 'ionicons/icons';
+import { add, sendOutline, checkmarkCircle } from 'ionicons/icons';
 
 type TipoPublicable = Exclude<TipoPost, 'producto'>;
+
+function productoVacio(): DatosItem {
+  return { foto: '', nombre: '', tipo: '', precio: '', descripcion: '' };
+}
 
 @Component({
   selector: 'app-home',
@@ -22,7 +28,7 @@ type TipoPublicable = Exclude<TipoPost, 'producto'>;
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, TarjetaItem, PostCard,
     RouterLink, FormsModule, IonGrid, IonRow, IonCol, IonIcon, IonSegment, IonSegmentButton, IonLabel,
-    IonCard, IonCardContent, IonTextarea, IonButton, IonChip, IonSpinner, IonText],
+    IonCard, IonCardContent, IonTextarea, IonButton, IonChip, IonSpinner, IonText, IonThumbnail, FormProducto],
 })
 export class HomePage {
   private itemService = inject(ItemService);
@@ -44,6 +50,19 @@ export class HomePage {
   textoNuevo = signal('');
   private campo = viewChild(IonTextarea);
 
+  // Ofrezco: publicar un producto nuevo o uno de los que ya tengo
+  modoOferta = signal<'nuevo' | 'mio'>('nuevo');
+  productoNuevo = signal<DatosItem>(productoVacio());
+  fotoNueva = signal<File | null>(null);
+  productoElegido = signal<number | undefined>(undefined);
+  misProductos = this.itemService.misProductos;
+
+  puedePublicar = computed(() => {
+    if (this.tipoNuevo() !== 'ofrezco') return !!this.textoNuevo().trim();
+    // El producto nuevo se valida al publicar para poder mostrar qué falta
+    return this.modoOferta() === 'nuevo' || this.productoElegido() !== undefined;
+  });
+
   posts = computed(() => {
     const filtro = this.filtroMuro();
     const lista = this.muroService.deMiComunidad();
@@ -54,7 +73,7 @@ export class HomePage {
   items = this.itemService.deMiComunidad;
 
   constructor() {
-    addIcons({ add, sendOutline });
+    addIcons({ add, sendOutline, checkmarkCircle });
   }
 
   etiquetaFiltro(f: TipoPost | 'todos'): string {
@@ -65,7 +84,7 @@ export class HomePage {
 
   placeholder = computed(() => ({
     busco: '¿Qué necesitas que te presten?',
-    ofrezco: '¿Qué quieres ofrecer a tus vecinos?',
+    ofrezco: 'Agrega un mensaje para tus vecinos (opcional)',
     aviso: '¿Qué quieres avisarle al edificio?',
   })[this.tipoNuevo()]);
 
@@ -74,8 +93,16 @@ export class HomePage {
   errorPublicar = signal('');
 
   async publicar() {
+    const tipo = this.tipoNuevo();
+    let r: Resultado;
     this.publicando.set(true);
-    const r = await this.muroService.publicar(this.tipoNuevo(), this.textoNuevo());
+    if (tipo === 'ofrezco' && this.modoOferta() === 'nuevo') {
+      r = await this.ofrecerNuevo();
+    } else if (tipo === 'ofrezco') {
+      r = await this.muroService.publicar(tipo, this.textoNuevo(), this.productoElegido());
+    } else {
+      r = await this.muroService.publicar(tipo, this.textoNuevo());
+    }
     this.publicando.set(false);
     if (!r.exito) {
       this.errorPublicar.set(r.mensaje);
@@ -84,6 +111,18 @@ export class HomePage {
     this.errorPublicar.set('');
     this.textoNuevo.set('');
     limpiar(this.campo());
+    this.productoNuevo.set(productoVacio());
+    this.fotoNueva.set(null);
+    this.productoElegido.set(undefined);
     this.filtroMuro.set('todos');
+  }
+
+  private async ofrecerNuevo(): Promise<Resultado> {
+    const datos = this.productoNuevo();
+    const invalido = this.itemService.validar(datos);
+    if (invalido) return { exito: false, mensaje: invalido };
+    const r = await this.itemService.ofrecerNuevo(datos, this.fotoNueva(), this.textoNuevo());
+    if (r.exito) await this.muroService.cargar();
+    return r;
   }
 }

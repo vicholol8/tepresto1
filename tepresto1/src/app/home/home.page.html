@@ -26,6 +26,46 @@
             </ion-chip>
           }
         </div>
+        @if (tipoNuevo() === 'ofrezco') {
+          <ion-segment class="modo-oferta" [value]="modoOferta()" (ionChange)="modoOferta.set($any($event.detail.value))">
+            <ion-segment-button value="nuevo">
+              <ion-label>Producto nuevo</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="mio">
+              <ion-label>Mis productos ({{ misProductos().length }})</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+
+          @if (modoOferta() === 'nuevo') {
+            <!-- Una sola vuelta por borrador: al publicar se crea uno nuevo y el formulario parte de cero -->
+            @for (borrador of [productoNuevo()]; track borrador) {
+              <app-form-producto [datos]="borrador" [(foto)]="fotoNueva"></app-form-producto>
+            }
+          } @else {
+            <div class="mis-productos">
+              @for (i of misProductos(); track i.id) {
+                <button type="button" class="opcion" [class.elegido]="productoElegido() === i.id"
+                  (click)="productoElegido.set(i.id)">
+                  <ion-thumbnail>
+                    <img [src]="i.foto" [alt]="i.nombre" />
+                  </ion-thumbnail>
+                  <div>
+                    <strong>{{ i.nombre }}</strong>
+                    <span>{{ i.tipo }} · {{ i.precio }}</span>
+                    @if (i.arrendado) {
+                      <span class="arrendado">Arrendado</span>
+                    }
+                  </div>
+                  @if (productoElegido() === i.id) {
+                    <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                  }
+                </button>
+              } @empty {
+                <p class="sin-productos">Aún no tienes productos publicados. Crea uno en "Producto nuevo".</p>
+              }
+            </div>
+          }
+        }
         <ion-textarea
           [ngModel]="textoNuevo()" (ngModelChange)="textoNuevo.set($event)"
           [placeholder]="placeholder()" [autoGrow]="true" rows="2">
@@ -34,7 +74,7 @@
           <ion-text color="danger"><p class="error">{{ errorPublicar() }}</p></ion-text>
         }
         <div class="publicar">
-          <ion-button size="small" (click)="publicar()" [disabled]="!textoNuevo().trim() || publicando()">
+          <ion-button size="small" (click)="publicar()" [disabled]="!puedePublicar() || publicando()">
             <ion-icon name="send-outline" slot="start"></ion-icon>
             Publicar
           </ion-button>

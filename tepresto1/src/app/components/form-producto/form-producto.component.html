@@ -1,0 +1,36 @@
+<div class="foto">
+  @if (vista()) {
+    <img [src]="vista()" alt="Foto del producto" />
+  } @else {
+    <button type="button" class="sin-foto" (click)="elegir()">
+      <ion-icon name="image-outline"></ion-icon>
+      <span>Agregar foto</span>
+    </button>
+  }
+  <div class="botones">
+    <ion-button size="small" fill="outline" (click)="elegir()">
+      <ion-icon name="camera-outline" slot="start"></ion-icon>
+      {{ vista() ? 'Cambiar foto' : 'Subir foto' }}
+    </ion-button>
+    @if (vista()) {
+      <ion-button size="small" fill="clear" color="medium" (click)="quitar()">Quitar</ion-button>
+    }
+  </div>
+  <input #selector type="file" accept="image/*" hidden (change)="alElegir($event)" />
+</div>
+
+<ion-input
+  fill="solid" label="Nombre del producto" labelPlacement="stacked" placeholder="Ej: Destornillador" [(ngModel)]="datos().nombre" class="ion-margin-bottom">
+</ion-input>
+
+<ion-input
+  fill="solid" label="Tipo" labelPlacement="stacked" placeholder="Ej: Herramienta/Cocina/Otro" [(ngModel)]="datos().tipo" class="ion-margin-bottom">
+</ion-input>
+
+<ion-input
+  fill="solid" label="Precio" labelPlacement="stacked" placeholder="Mínimo $1000" [(ngModel)]="datos().precio" class="ion-margin-bottom">
+</ion-input>
+
+<ion-textarea
+  fill="solid" label="Descripción" labelPlacement="stacked" placeholder="Ej: Buen estado..." [(ngModel)]="datos().descripcion" class="ion-margin-bottom" autoGrow="true">
+</ion-textarea>

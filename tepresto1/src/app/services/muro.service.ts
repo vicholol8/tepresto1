@@ -18,7 +18,7 @@ export interface Post {
   autorId: string;
   tipo: TipoPost;
   texto: string;
-  itemId?: number; // solo en posts de tipo 'producto'
+  itemId?: number; // siempre en 'producto'; opcional en 'ofrezco'
   fecha: number;
   comentarios: Comentario[];
 }
@@ -46,10 +46,10 @@ export class MuroService {
   readonly cargado = signal(false);
 
   // Posts de la comunidad (RLS), el más reciente primero.
-  // Un post de producto se oculta hasta que su item esté cargado, para no mostrarlo vacío.
+  // Un post con producto se oculta hasta que su item esté cargado, para no mostrarlo vacío.
   readonly deMiComunidad = computed(() => {
     const itemsVisibles = new Set(this.itemService.deMiComunidad().map(i => i.id));
-    return this.posts().filter(p => p.tipo !== 'producto' || (p.itemId !== undefined && itemsVisibles.has(p.itemId)));
+    return this.posts().filter(p => p.itemId === undefined ? p.tipo !== 'producto' : itemsVisibles.has(p.itemId));
   });
 
   constructor() {
@@ -65,7 +65,8 @@ export class MuroService {
     });
   }
 
-  private async cargar() {
+  // Público para refrescar al tiro tras publicar desde otro servicio (p. ej. ofrecer un producto nuevo)
+  async cargar() {
     const { data } = await this.supabase.from('posts').select('*, comentarios(*)')
       .order('created_at', { ascending: false });
     this.posts.set((data ?? []).map(aPost));
@@ -76,10 +77,12 @@ export class MuroService {
     return this.deMiComunidad().find(p => p.id === Number(id));
   }
 
-  async publicar(tipo: Exclude<TipoPost, 'producto'>, texto: string): Promise<Resultado> {
+  // Un 'ofrezco' puede ir con uno de mis productos (itemId); en ese caso el texto es opcional
+  async publicar(tipo: Exclude<TipoPost, 'producto'>, texto: string, itemId?: number): Promise<Resultado> {
     const limpio = texto.trim();
-    if (!limpio) return { exito: false, mensaje: 'Escribe algo para publicar.' };
-    const { error } = await this.supabase.from('posts').insert({ tipo, texto: limpio });
+    if (itemId !== undefined && tipo !== 'ofrezco') return { exito: false, mensaje: 'Solo se puede ofrecer un producto.' };
+    if (!limpio && itemId === undefined) return { exito: false, mensaje: 'Escribe algo para publicar.' };
+    const { error } = await this.supabase.from('posts').insert({ tipo, texto: limpio, item_id: itemId ?? null });
     if (!error) await this.cargar();
     return this.sb.resultado(error, 'Publicado.');
   }
