@@ -1,27 +1,46 @@
-#container {
-  text-align: center;
+.nuevo-post {
+    margin: 0 0 8px 0;
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+    .tipos {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 4px;
+    }
+
+    ion-textarea {
+        --padding-start: 4px;
+        font-size: 15px;
+    }
+
+    .publicar {
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.filtros {
+    display: flex;
+    overflow-x: auto;
+    margin: 0 -4px 8px;
+
+    ion-chip {
+        flex-shrink: 0;
+    }
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+.vacio {
+    text-align: center;
+    color: var(--ion-color-medium);
+    margin-top: 2rem;
 }
 
-#container a {
-  text-decoration: none;
+// Espacio para que el último post no quede tapado por el botón +
+app-post-card:last-of-type {
+    display: block;
+    margin-bottom: 72px;
+}
+
+.error {
+    font-size: 13px;
+    margin: 4px 0 0;
 }

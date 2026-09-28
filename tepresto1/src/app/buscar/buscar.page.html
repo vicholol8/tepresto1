@@ -4,7 +4,7 @@
   </ion-toolbar>
   <ion-toolbar>
     <ion-searchbar 
-      placeholder="Buscar por nombre, tipo o descripción..." 
+      placeholder="Buscar productos o publicaciones..." 
       (ionInput)="onSearch($event)"
       [debounce]="200">
     </ion-searchbar>
@@ -12,6 +12,9 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  @if (postsFiltrados().length > 0) {
+    <h3 class="seccion">Productos</h3>
+  }
   <ion-list>
     @for (item of itemsFiltrados(); track item.id) {
       <ion-item lines="full">
@@ -20,7 +23,7 @@
         </ion-thumbnail>
         <ion-label (click)="irADetalle(item.id)">
           <h2>{{ item.nombre }}</h2>
-          <p>{{ item.tipo }} - {{ item.depto }}</p>
+          <p>{{ item.tipo }} - {{ dueno(item)?.depto }}</p>
           <p><strong>{{ item.precio }}</strong></p>
         </ion-label>
         <ion-button 
@@ -34,17 +37,29 @@
         </ion-button>
       </ion-item>
     } @empty {
-      <ion-text color="medium" class="ion-text-center">
-        <p>No se encontraron resultados.</p>
-      </ion-text>
+      @if (postsFiltrados().length === 0) {
+        <ion-text color="medium" class="ion-text-center">
+          <p>No se encontraron resultados.</p>
+        </ion-text>
+      }
     }
   </ion-list>
-</ion-content>
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">buscar</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  @if (postsFiltrados().length > 0) {
+    <h3 class="seccion">Publicaciones del muro</h3>
+    <ion-list>
+      @for (post of postsFiltrados(); track post.id) {
+        <ion-item lines="full" button [routerLink]="['/post', post.id]">
+          <ion-avatar slot="start">
+            <img [src]="autor(post.autorId)?.foto" [alt]="autor(post.autorId)?.nombre" />
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ autor(post.autorId)?.nombre }} · {{ tipos[post.tipo].etiqueta }}</h2>
+            <p>{{ post.texto }}</p>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
 </ion-content>
 

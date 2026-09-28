@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Publicación</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (post(); as p) {
+    <app-post-card [post]="p" [enDetalle]="true"></app-post-card>
+
+    <div class="comentarios">
+      @for (c of p.comentarios; track c.id) {
+        <div class="comentario" [class.mio]="esMio(c.autorId)">
+          <ion-avatar>
+            <img [src]="autor(c.autorId)?.foto" [alt]="autor(c.autorId)?.nombre" />
+          </ion-avatar>
+          <div class="burbuja">
+            <strong>{{ esMio(c.autorId) ? 'Tú' : autor(c.autorId)?.nombre }}</strong>
+            <p>{{ c.texto }}</p>
+            <span class="hora">{{ hace(c.fecha) }}</span>
+          </div>
+        </div>
+      } @empty {
+        <p class="vacio">Nadie ha comentado todavía. ¡Sé el primero!</p>
+      }
+    </div>
+  } @else if (!cargado()) {
+    <div class="ion-text-center ion-margin-top"><ion-spinner></ion-spinner></div>
+  } @else {
+    <div class="ion-text-center ion-margin-top">
+      <h2>Publicación no encontrada</h2>
+      <p>La publicación fue eliminada o no pertenece a tu comunidad.</p>
+    </div>
+  }
+</ion-content>
+
+@if (post()) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-input [ngModel]="nuevoComentario()" (ngModelChange)="nuevoComentario.set($event)"
+        placeholder="Escribe un comentario..." (keyup.enter)="comentar()"></ion-input>
+      <ion-button fill="clear" slot="end" (click)="comentar()" aria-label="Comentar">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+}

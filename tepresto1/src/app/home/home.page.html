@@ -1,29 +1,87 @@
 <ion-header>
   <ion-toolbar>
     <ion-title class="ion-text-center">TePresto</ion-title>
-    <ion-buttons slot="end">
-    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="vista()" (ionChange)="vista.set($any($event.detail.value))">
+      <ion-segment-button value="muro">
+        <ion-label>Muro</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="productos">
+        <ion-label>Productos</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-align-items-stretch">
-      @for (i of itemFil(); track i.id) {
-        <ion-col size="6">
-          <app-tarjeta-item [item]="i"></app-tarjeta-item>
-        </ion-col>
-      } @empty {
-        <ion-col size="12" class="ion-text-center">
-          <p>No hay items para mostrar</p>
-        </ion-col>
+  @if (vista() === 'muro') {
+    <ion-card class="nuevo-post">
+      <ion-card-content>
+        <div class="tipos">
+          @for (t of tiposPublicables; track t) {
+            <ion-chip [color]="tipos[t].color" [outline]="tipoNuevo() !== t" (click)="tipoNuevo.set(t)">
+              <ion-icon [name]="tipos[t].icono"></ion-icon>
+              <ion-label>{{ tipos[t].etiqueta }}</ion-label>
+            </ion-chip>
+          }
+        </div>
+        <ion-textarea
+          [ngModel]="textoNuevo()" (ngModelChange)="textoNuevo.set($event)"
+          [placeholder]="placeholder()" [autoGrow]="true" rows="2">
+        </ion-textarea>
+        @if (errorPublicar()) {
+          <ion-text color="danger"><p class="error">{{ errorPublicar() }}</p></ion-text>
+        }
+        <div class="publicar">
+          <ion-button size="small" (click)="publicar()" [disabled]="!textoNuevo().trim() || publicando()">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            Publicar
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="filtros">
+      @for (f of filtros; track f) {
+        <ion-chip [outline]="filtroMuro() !== f" color="medium" (click)="filtroMuro.set(f)">
+          <ion-label>{{ etiquetaFiltro(f) }}</ion-label>
+        </ion-chip>
       }
-    </ion-row>
-  </ion-grid>
+    </div>
+
+    @for (p of posts(); track p.id) {
+      <app-post-card [post]="p"></app-post-card>
+    } @empty {
+      @if (muroCargado()) {
+        <p class="vacio">No hay publicaciones en el muro de {{ comunidad() }} todavía. ¡Sé el primero en publicar!</p>
+      } @else {
+        <div class="vacio"><ion-spinner></ion-spinner></div>
+      }
+    }
+  } @else {
+    <ion-grid>
+      <ion-row class="ion-align-items-stretch">
+        @for (i of items(); track i.id) {
+          <ion-col size="6">
+            <app-tarjeta-item [item]="i"></app-tarjeta-item>
+          </ion-col>
+        } @empty {
+          <ion-col size="12" class="ion-text-center">
+            @if (itemsCargados()) {
+              <p>Todavía no hay productos en {{ comunidad() }}. Toca + para publicar el primero.</p>
+            } @else {
+              <ion-spinner></ion-spinner>
+            }
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
+  }
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button routerLink="/agregar">
+    <ion-fab-button routerLink="/agregar" aria-label="Publicar un producto">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  
 </ion-content>

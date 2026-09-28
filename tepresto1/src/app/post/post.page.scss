@@ -1,0 +1,79 @@
+.comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.comentario {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+
+    ion-avatar {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    &.mio {
+        flex-direction: row-reverse;
+
+        .burbuja {
+            background: var(--ion-color-primary);
+            color: white;
+            border-radius: 12px 12px 0px 12px;
+
+            strong,
+            .hora {
+                color: rgba(255, 255, 255, 0.8);
+            }
+        }
+    }
+}
+
+.burbuja {
+    max-width: 75%;
+    background: var(--ion-color-light);
+    color: var(--ion-color-dark);
+    padding: 8px 12px;
+    border-radius: 12px 12px 12px 0px;
+
+    strong {
+        display: block;
+        font-size: 12px;
+        color: var(--ion-color-primary);
+        margin-bottom: 2px;
+    }
+
+    p {
+        margin: 0 0 4px 0;
+        font-size: 15px;
+    }
+
+    .hora {
+        font-size: 11px;
+        color: var(--ion-color-medium);
+        display: block;
+        text-align: right;
+    }
+}
+
+.vacio {
+    text-align: center;
+    color: var(--ion-color-medium);
+    margin-top: 1.5rem;
+}
+
+ion-footer {
+    ion-toolbar {
+        --padding-start: 10px;
+        --padding-end: 5px;
+    }
+
+    ion-input {
+        background: var(--ion-color-light);
+        border-radius: 20px;
+        --padding-start: 15px !important;
+    }
+}

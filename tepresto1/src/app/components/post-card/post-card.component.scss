@@ -1,0 +1,98 @@
+ion-card {
+    margin: 0 0 12px 0;
+}
+
+.cabecera {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    ion-avatar {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+    .autor {
+        flex-grow: 1;
+        min-width: 0;
+
+        strong {
+            display: block;
+            color: var(--ion-text-color);
+        }
+
+        span {
+            font-size: 12px;
+            color: var(--ion-color-medium);
+        }
+    }
+
+    .tipo {
+        flex-shrink: 0;
+        font-size: 12px;
+        height: 26px;
+        margin: 0;
+    }
+}
+
+.texto {
+    margin: 12px 0 0 0;
+    font-size: 15px;
+    color: var(--ion-text-color);
+    white-space: pre-line;
+}
+
+.producto {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--ion-color-step-100, rgba(127, 127, 127, 0.1));
+    cursor: pointer;
+
+    ion-thumbnail {
+        --size: 64px;
+        --border-radius: 6px;
+
+        img {
+            object-fit: cover;
+        }
+    }
+
+    strong,
+    span {
+        display: block;
+    }
+
+    strong {
+        color: var(--ion-text-color);
+    }
+
+    span {
+        font-size: 13px;
+        color: var(--ion-color-medium);
+    }
+
+    .arrendado {
+        color: var(--ion-color-success);
+    }
+}
+
+.acciones {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    margin-bottom: -8px;
+
+    .contador {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--ion-color-medium);
+    }
+}

@@ -1,0 +1,66 @@
+<ion-card>
+  <ion-card-content>
+    <div class="cabecera">
+      <ion-avatar>
+        <img [src]="autor()?.foto" [alt]="autor()?.nombre" />
+      </ion-avatar>
+      <div class="autor">
+        <strong>{{ autor()?.nombre }}</strong>
+        <span>{{ autor()?.depto }} · {{ hace() }}</span>
+      </div>
+      <ion-chip [color]="tipo().color" class="tipo">
+        <ion-icon [name]="tipo().icono"></ion-icon>
+        <ion-label>{{ tipo().etiqueta }}</ion-label>
+      </ion-chip>
+    </div>
+
+    @if (post().texto) {
+      <p class="texto">{{ post().texto }}</p>
+    }
+
+    @if (item(); as i) {
+      <div class="producto" [routerLink]="['/detalle', i.id]">
+        <ion-thumbnail>
+          <img [src]="i.foto" [alt]="i.nombre" />
+        </ion-thumbnail>
+        <div>
+          <strong>{{ i.nombre }}</strong>
+          <span>{{ i.tipo }} · {{ i.precio }}</span>
+          <span [class.arrendado]="i.arrendado">{{ i.arrendado ? 'Arrendado' : 'Disponible' }}</span>
+        </div>
+      </div>
+    }
+
+    <div class="acciones">
+      @if (enDetalle()) {
+        <span class="contador">
+          <ion-icon name="chatbubble-outline"></ion-icon>
+          {{ post().comentarios.length }} comentarios
+        </span>
+      } @else {
+        <ion-button fill="clear" size="small" [routerLink]="['/post', post().id]">
+          <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+          {{ post().comentarios.length }} comentarios
+        </ion-button>
+      }
+
+      @if (esMio()) {
+        @if (post().tipo !== 'producto') {
+          @if (confirmando()) {
+            <ion-button fill="clear" size="small" color="danger" (click)="eliminar()" [disabled]="ocupado()">Sí, eliminar</ion-button>
+            <ion-button fill="clear" size="small" color="medium" (click)="confirmando.set(false)">Cancelar</ion-button>
+          } @else {
+            <ion-button fill="clear" size="small" color="medium" (click)="confirmando.set(true)" aria-label="Eliminar publicación">
+              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          }
+        }
+      } @else {
+        <ion-button fill="clear" size="small" color="secondary" (click)="contactar()" [disabled]="ocupado()">
+          <ion-icon name="paper-plane-outline" slot="start"></ion-icon>
+          {{ post().tipo === 'busco' ? 'Yo te presto' : 'Contactar' }}
+        </ion-button>
+      }
+    </div>
+  </ion-card-content>
+</ion-card>
