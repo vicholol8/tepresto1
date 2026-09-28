@@ -57,6 +57,11 @@ export const routes: Routes = [
     loadComponent: () => import('./post/post.page').then( m => m.PostPage)
   },
   {
+    path: 'prestamos',
+    canActivate: [authGuard],
+    loadComponent: () => import('./prestamos/prestamos.page').then( m => m.PrestamosPage)
+  },
+  {
     path: 'completar-perfil',
     canActivate: [sinComunidadGuard],
     loadComponent: () => import('./completar-perfil/completar-perfil.page').then( m => m.CompletarPerfilPage)

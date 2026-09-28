@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/perfil"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mis préstamos</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="vista()" (ionChange)="cambiarVista($any($event.detail.value))">
+      <ion-segment-button value="pedidos">
+        <ion-label>Lo que pedí</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="prestados">
+        <ion-label>
+          Lo que presto
+          @if (porResponder() > 0) {
+            <ion-badge color="danger">{{ porResponder() }}</ion-badge>
+          }
+        </ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (resultado(); as r) {
+    <ion-text [color]="r.exito ? 'success' : 'danger'">
+      <p class="resultado">{{ r.mensaje }}</p>
+    </ion-text>
+  }
+
+  <ion-list>
+    @for (p of lista(); track p.id) {
+      <ion-item lines="full">
+        <ion-thumbnail slot="start" [routerLink]="['/detalle', p.itemId]">
+          <img [src]="item(p)?.foto" [alt]="item(p)?.nombre" />
+        </ion-thumbnail>
+        <ion-label>
+          <h2 [routerLink]="['/detalle', p.itemId]">{{ item(p)?.nombre }}</h2>
+          <p>{{ vista() === 'pedidos' ? 'Dueño' : 'Pide' }}: {{ otro(p)?.nombre }} · {{ otro(p)?.depto }}</p>
+          <p>Del {{ dia(p.desde) }} al {{ dia(p.hasta) }}</p>
+          @if (p.mensaje && vista() === 'prestados') {
+            <p class="mensaje">"{{ p.mensaje }}"</p>
+          }
+          <div class="acciones">
+            @if (vista() === 'pedidos' && p.estado === 'pendiente') {
+              <ion-button size="small" fill="outline" color="medium" (click)="cancelar(p.id)" [disabled]="ocupado()">Cancelar</ion-button>
+            }
+            @if (vista() === 'prestados' && p.estado === 'pendiente') {
+              <ion-button size="small" color="success" (click)="aceptar(p.id)" [disabled]="item(p)?.arrendado || ocupado()">Aceptar</ion-button>
+              <ion-button size="small" fill="outline" color="danger" (click)="rechazar(p.id)" [disabled]="ocupado()">Rechazar</ion-button>
+            }
+            @if (vista() === 'prestados' && p.estado === 'aceptado') {
+              <ion-button size="small" color="success" (click)="devuelto(p.id)" [disabled]="ocupado()">Marcar como devuelto</ion-button>
+            }
+          </div>
+        </ion-label>
+        <ion-chip slot="end" [color]="estados[p.estado].color">
+          <ion-label>{{ estados[p.estado].etiqueta }}</ion-label>
+        </ion-chip>
+      </ion-item>
+    } @empty {
+      <div class="ion-text-center ion-padding vacio">
+        <ion-icon name="swap-horizontal-outline" size="large" color="medium"></ion-icon>
+        @if (vista() === 'pedidos') {
+          <p>Aún no has pedido nada prestado.</p>
+        } @else {
+          <p>Nadie te ha pedido nada todavía.</p>
+        }
+      </div>
+    }
+  </ion-list>
+</ion-content>

@@ -1,0 +1,104 @@
+:host {
+    display: block;
+}
+
+h3 {
+    font-size: 16px;
+    margin: 16px 0 8px;
+}
+
+.aviso {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: var(--ion-color-step-100, rgba(127, 127, 127, 0.12));
+
+    ion-icon {
+        font-size: 24px;
+        flex-shrink: 0;
+        color: var(--ion-color-medium);
+    }
+
+    strong,
+    span {
+        display: block;
+    }
+
+    span {
+        font-size: 13px;
+        color: var(--ion-color-medium);
+    }
+
+    &.activo ion-icon {
+        color: var(--ion-color-success);
+    }
+
+    &.pendiente ion-icon {
+        color: var(--ion-color-warning);
+    }
+}
+
+.solicitud {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--ion-color-step-150, rgba(127, 127, 127, 0.2));
+
+    ion-avatar {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+    .info {
+        flex-grow: 1;
+
+        strong,
+        span,
+        em {
+            display: block;
+        }
+
+        span,
+        em {
+            font-size: 13px;
+            color: var(--ion-color-medium);
+        }
+    }
+
+    .botones {
+        display: flex;
+        gap: 4px;
+        margin-top: 6px;
+        margin-left: -4px;
+    }
+}
+
+.formulario {
+    .fechas {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+
+        ion-input {
+            flex: 1;
+        }
+    }
+
+    ion-textarea {
+        margin-bottom: 8px;
+    }
+}
+
+.nota,
+.resultado {
+    font-size: 13px;
+    text-align: center;
+}
+
+.nota {
+    color: var(--ion-color-medium);
+}

@@ -18,36 +18,45 @@
     <div class="ion-margin-top">
       <p><strong>Tipo:</strong> {{ item()?.tipo }}</p>
       <p><strong>Precio:</strong> {{ item()?.precio }}</p>
-      <p><strong>Departamento:</strong> {{ item()?.depto }}</p>
-      <p><strong>Dueño:</strong> {{ item()?.dueno }}</p>
+      <p><strong>Departamento:</strong> {{ dueno()?.depto }}</p>
+      <p><strong>Dueño:</strong> {{ dueno()?.nombre }}</p>
     </div>
 
     <h3 class="ion-margin-top">Sobre el producto</h3>
     <p>{{ item()?.descripcion }}</p>
     <div class="ion-margin-tops ion-padding-top">
-      @if (item()?.arrendado) {
-        <ion-button expand="block" disabled="true" color="medium">Ya fue arrendado</ion-button>
-      } @else {
-        <ion-button expand="block" color="primary" (click)="arrendar()">Arrendar producto</ion-button>
+      <app-arriendo-panel [item]="item()!"></app-arriendo-panel>
+
+      @if (!esDueno()) {
+        <ion-button expand="block" color="secondary" (click)="hablarConDueno()" [disabled]="ocupado()">
+          <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
+          Hablar con el dueño
+        </ion-button>
       }
-      <ion-button expand="block" color="secondary" [routerLink]="['/chat', item()?.id]">
-        <ion-icon slot="start" name="chatbubbles-outline"></ion-icon>
-        Hablar con el dueño
-      </ion-button>
 
       @if (esDueno()) {
         <ion-button expand="block" color="tertiary" [routerLink]="['/editar', item()?.id]" class="ion-margin-top">Editar datos</ion-button>
 
         @if (confirmacion) {
-          <div class="ion-margin-top ion-padding" style="background: white; border-radius: 8px;">
+          <div class="ion-margin-top ion-padding" style="background: var(--ion-color-step-100, rgba(127,127,127,0.12)); border-radius: 8px;">
             <p style="color: red; text-align: center; font-weight: bold; margin-top: 0;">Estás seguro?</p>
-            <ion-button expand="block" color="danger" (click)="eliminar()">Sí, eliminar de forma definitiva</ion-button>
+            <ion-button expand="block" color="danger" (click)="eliminar()" [disabled]="ocupado()">Sí, eliminar de forma definitiva</ion-button>
             <ion-button expand="block" fill="clear" clear="medium" (click)="confirmacion = false">Cancelar</ion-button>
           </div>
         } @else {
           <ion-button expand="block" color="danger" (click)="confirmacion = true" class="ion-margin-top">Eliminar producto</ion-button>
         }
       }
+
+      @if (error()) {
+        <ion-text color="danger">
+          <p class="ion-text-center">{{ error() }}</p>
+        </ion-text>
+      }
+    </div>
+  } @else if (!cargado()) {
+    <div class="ion-text-center ion-margin-top">
+      <ion-spinner></ion-spinner>
     </div>
   } @else {
     <div class="ion-text-center ion-margin-top">

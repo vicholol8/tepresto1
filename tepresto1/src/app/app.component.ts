@@ -8,6 +8,7 @@ import {
   IonBadge
 } from '@ionic/angular';
 import { ChatService } from './services/chat.service';
+import { PrestamoService } from './services/prestamo.service';
 
 import { addIcons } from 'ionicons';
 import { homeOutline, searchOutline, heartOutline, personOutline, add, chatbubblesOutline } from 'ionicons/icons';
@@ -26,6 +27,7 @@ import { homeOutline, searchOutline, heartOutline, personOutline, add, chatbubbl
 })
 export class AppComponent {
   noLeidos = inject(ChatService).totalNoLeidos;
+  porResponder = inject(PrestamoService).solicitudesPorResponder;
 
   constructor() {
     addIcons({ homeOutline, searchOutline, heartOutline, personOutline, add, chatbubblesOutline });

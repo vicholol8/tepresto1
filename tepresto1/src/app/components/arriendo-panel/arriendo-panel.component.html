@@ -1,0 +1,106 @@
+@if (esDueno()) {
+  <!-- Vista del dueño -->
+  @if (activo(); as a) {
+    <div class="aviso activo">
+      <ion-icon name="time-outline"></ion-icon>
+      <div>
+        <strong>Prestado a {{ usuario(a.solicitanteId)?.nombre }} ({{ usuario(a.solicitanteId)?.depto }})</strong>
+        <span>Del {{ dia(a.desde) }} al {{ dia(a.hasta) }}</span>
+      </div>
+    </div>
+    <ion-button expand="block" color="success" (click)="devuelto(a.id)" [disabled]="ocupado()">
+      <ion-icon name="return-down-back-outline" slot="start"></ion-icon>
+      Marcar como devuelto
+    </ion-button>
+  }
+
+  @if (pendientes().length > 0) {
+    <h3>Solicitudes ({{ pendientes().length }})</h3>
+    @for (p of pendientes(); track p.id) {
+      <div class="solicitud">
+        <ion-avatar>
+          <img [src]="usuario(p.solicitanteId)?.foto" [alt]="usuario(p.solicitanteId)?.nombre" />
+        </ion-avatar>
+        <div class="info">
+          <strong>{{ usuario(p.solicitanteId)?.nombre }}</strong>
+          <span>Del {{ dia(p.desde) }} al {{ dia(p.hasta) }}</span>
+          @if (p.mensaje) {
+            <em>"{{ p.mensaje }}"</em>
+          }
+          <div class="botones">
+            <ion-button size="small" color="success" (click)="aceptar(p.id)" [disabled]="!!activo() || ocupado()">
+              <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+              Aceptar
+            </ion-button>
+            <ion-button size="small" fill="outline" color="danger" (click)="rechazar(p.id)" [disabled]="ocupado()">
+              <ion-icon name="close-outline" slot="start"></ion-icon>
+              Rechazar
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    }
+    @if (activo()) {
+      <p class="nota">Podrás aceptar otra solicitud cuando te devuelvan el producto.</p>
+    }
+  }
+} @else {
+  <!-- Vista de un vecino -->
+  @if (esMiArriendo() && activo(); as a) {
+    <div class="aviso activo">
+      <ion-icon name="time-outline"></ion-icon>
+      <div>
+        <strong>Lo tienes arrendado</strong>
+        <span>Del {{ dia(a.desde) }} al {{ dia(a.hasta) }}. Devuélvelo a tiempo 🙌</span>
+      </div>
+    </div>
+  } @else if (item().arrendado) {
+    <!-- Por privacidad (RLS) no se ve a quién se prestó; solo hasta cuándo -->
+    <div class="aviso">
+      <ion-icon name="time-outline"></ion-icon>
+      <div>
+        <strong>Arrendado</strong>
+        @if (item().arrendadoHasta; as hasta) {
+          <span>Vuelve a estar disponible después del {{ dia(hasta) }}</span>
+        }
+      </div>
+    </div>
+  } @else if (miPendiente(); as p) {
+    <div class="aviso pendiente">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <div>
+        <strong>Solicitud enviada</strong>
+        <span>Del {{ dia(p.desde) }} al {{ dia(p.hasta) }} · esperando respuesta</span>
+      </div>
+    </div>
+    <ion-button expand="block" fill="outline" color="medium" (click)="cancelar(p.id)" [disabled]="ocupado()">Cancelar solicitud</ion-button>
+  } @else if (formAbierto()) {
+    <div class="formulario">
+      <h3>Solicitar arriendo</h3>
+      <div class="fechas">
+        <ion-input type="date" label="Desde" labelPlacement="stacked" fill="outline" [min]="hoy"
+          [ngModel]="desde()" (ngModelChange)="desde.set($event)"></ion-input>
+        <ion-input type="date" label="Hasta" labelPlacement="stacked" fill="outline" [min]="desde()"
+          [ngModel]="hasta()" (ngModelChange)="hasta.set($event)"></ion-input>
+      </div>
+      <ion-textarea label="Mensaje (opcional)" labelPlacement="stacked" fill="outline" [autoGrow]="true"
+        placeholder="Ej: Es para una junta el sábado"
+        [ngModel]="mensaje()" (ngModelChange)="mensaje.set($event)"></ion-textarea>
+      <ion-button expand="block" (click)="enviarSolicitud()" [disabled]="ocupado()">
+        {{ ocupado() ? 'Enviando...' : 'Enviar solicitud' }}
+      </ion-button>
+      <ion-button expand="block" fill="clear" color="medium" (click)="formAbierto.set(false)">Cancelar</ion-button>
+    </div>
+  } @else {
+    <ion-button expand="block" (click)="abrirFormulario()">
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+      Solicitar arriendo
+    </ion-button>
+  }
+}
+
+@if (resultado(); as r) {
+  <ion-text [color]="r.exito ? 'success' : 'danger'">
+    <p class="resultado">{{ r.mensaje }}</p>
+  </ion-text>
+}
